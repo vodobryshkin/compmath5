@@ -35,8 +35,31 @@ public class LagrangeInterpolationPolynomial extends InterpolationPolynomial {
             arguments.add(xArg * yi);
         }
 
-        MathematicalFunction polynomial = new Polynomial(arguments);
+        return new Solution(arguments.stream().mapToDouble(Double::doubleValue).sum(), null, stringFormula());
+    }
 
-        return polynomial.value(x);
+    private String stringFormula() {
+        int n = xColumn.size();
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < n; i++) {
+            double yi = yColumn.get(i);
+            StringBuilder prom = new StringBuilder();
+
+            for (int j = 0; j < n; j++) {
+                if (i != j) {
+                    double xi = xColumn.get(i);
+                    double xj = xColumn.get(j);
+                    prom.append("(x - ").append(xj).append(")/(").append(xi).append(" - ").append(xj).append(") *");
+                }
+            }
+            prom = new StringBuilder(prom.substring(0, prom.length() - 1));
+
+            prom = new StringBuilder(yi + " * " + prom + " + ");
+
+            result.append(prom);
+        }
+
+        return result.toString();
     }
 }

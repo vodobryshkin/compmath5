@@ -8,4 +8,5 @@ import java.util.List;
 public class Solution {
     double result;
     List<List<Double>> separatedDifferences;
+    String formula;
 }
