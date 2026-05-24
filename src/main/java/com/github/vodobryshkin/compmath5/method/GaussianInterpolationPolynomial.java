@@ -30,13 +30,13 @@ public class GaussianInterpolationPolynomial extends InterpolationPolynomial {
         double t = (x - centerX) / h;
 
         if (x > centerX) {
-            return firstFormula(x, t);
+            return firstFormula(t);
         }
 
-        return secondFormula(x, t);
+        return secondFormula(t);
     }
 
-    private Solution firstFormula(double x, double t) {
+    private Solution firstFormula(double t) {
         int size = xColumn.size();
         int centerIndex = (size - 1) / 2;
 
@@ -88,10 +88,10 @@ public class GaussianInterpolationPolynomial extends InterpolationPolynomial {
             shift++;
         }
 
-        return new Solution(result, differences, firstFormulaString());
+        return new Solution(result, differences, firstFormulaString(t));
     }
 
-    private Solution secondFormula(double x, double t) {
+    private Solution secondFormula(double t) {
         int size = xColumn.size();
         int centerIndex = (size - 1) / 2;
 
@@ -143,7 +143,7 @@ public class GaussianInterpolationPolynomial extends InterpolationPolynomial {
             shift++;
         }
 
-        return new Solution(result, differences, secondFormulaString());
+        return new Solution(result, differences, secondFormulaString(t));
     }
 
     private List<List<Double>> table() {
@@ -166,38 +166,32 @@ public class GaussianInterpolationPolynomial extends InterpolationPolynomial {
         return table;
     }
 
-    private String firstFormulaString() {
+    private String firstFormulaString(double t) {
         int size = xColumn.size();
         int centerIndex = (size - 1) / 2;
-
-        double centerX = xColumn.get(centerIndex);
-        double h = xColumn.get(1) - xColumn.getFirst();
 
         List<List<Double>> differences = table();
 
         StringBuilder result = new StringBuilder();
-        result.append("t = (x - ").append(centerX).append(") / ").append(h).append("; P(x) = ").append(differences.get(centerIndex).getFirst());
+        result.append(differences.get(centerIndex).getFirst());
 
         int order = 1;
         long factorial = 1L;
         int shift = 1;
 
         List<String> factors = new ArrayList<>();
-        factors.add("t");
+        factors.add(String.valueOf(t));
 
         int row = centerIndex;
 
         if (order < differences.get(row).size()) {
-            result.append(" + ")
-                    .append(String.join(" * ", factors))
-                    .append(" * ")
-                    .append(differences.get(row).get(order));
+            result.append(" + ").append(String.join(" * ", factors)).append(" * ").append(differences.get(row).get(order));
         }
 
         while (order < size - 1) {
             order++;
             factorial *= order;
-            factors.add("(t - " + shift + ")");
+            factors.add("(" + t + " - " + shift + ")");
 
             row = centerIndex - shift;
 
@@ -213,7 +207,7 @@ public class GaussianInterpolationPolynomial extends InterpolationPolynomial {
 
             order++;
             factorial *= order;
-            factors.add(0, "(t + " + shift + ")");
+            factors.addFirst("(" + t + " + " + shift + ")");
 
             row = centerIndex - shift;
 
@@ -229,24 +223,21 @@ public class GaussianInterpolationPolynomial extends InterpolationPolynomial {
         return result.toString();
     }
 
-    private String secondFormulaString() {
+    private String secondFormulaString(double t) {
         int size = xColumn.size();
         int centerIndex = (size - 1) / 2;
-
-        double centerX = xColumn.get(centerIndex);
-        double h = xColumn.get(1) - xColumn.getFirst();
 
         List<List<Double>> differences = table();
 
         StringBuilder result = new StringBuilder();
-        result.append("t = (x - ").append(centerX).append(") / ").append(h).append("; P(x) = ").append(differences.get(centerIndex).getFirst());
+        result.append(differences.get(centerIndex).getFirst());
 
         int order = 1;
         long factorial = 1L;
         int shift = 1;
 
         List<String> factors = new ArrayList<>();
-        factors.add("t");
+        factors.add(String.valueOf(t));
 
         int row = centerIndex - 1;
 
@@ -257,7 +248,7 @@ public class GaussianInterpolationPolynomial extends InterpolationPolynomial {
         while (order < size - 1) {
             order++;
             factorial *= order;
-            factors.add(0, "(t + " + shift + ")");
+            factors.addFirst("(" + t + " + " + shift + ")");
 
             row = centerIndex - shift;
 
@@ -273,7 +264,7 @@ public class GaussianInterpolationPolynomial extends InterpolationPolynomial {
 
             order++;
             factorial *= order;
-            factors.add("(t - " + shift + ")");
+            factors.add("(" + t + " - " + shift + ")");
 
             row = centerIndex - shift - 1;
 

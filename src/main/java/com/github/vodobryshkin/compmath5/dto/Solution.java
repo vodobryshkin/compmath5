@@ -7,6 +7,6 @@ import java.util.List;
 @Value
 public class Solution {
     double result;
-    List<List<Double>> separatedDifferences;
+    List<List<Double>> differences;
     String formula;
 }
