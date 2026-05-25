@@ -88,7 +88,7 @@ public class GaussianInterpolationPolynomial extends InterpolationPolynomial {
             shift++;
         }
 
-        return new Solution(result, xColumn, yColumn, differences, firstFormulaString(t));
+        return new Solution(result, xColumn, yColumn, differences, firstFormulaString());
     }
 
     private Solution secondFormula(double t) {
@@ -143,7 +143,7 @@ public class GaussianInterpolationPolynomial extends InterpolationPolynomial {
             shift++;
         }
 
-        return new Solution(result, xColumn, yColumn, differences, secondFormulaString(t));
+        return new Solution(result, xColumn, yColumn, differences, secondFormulaString());
     }
 
     private List<List<Double>> table() {
@@ -166,9 +166,14 @@ public class GaussianInterpolationPolynomial extends InterpolationPolynomial {
         return table;
     }
 
-    private String firstFormulaString(double t) {
+    private String firstFormulaString() {
         int size = xColumn.size();
         int centerIndex = (size - 1) / 2;
+
+        double centerX = xColumn.get(centerIndex);
+        double h = xColumn.get(1) - xColumn.getFirst();
+
+        String t = "((x - " + centerX + ") / " + h + ")";
 
         List<List<Double>> differences = table();
 
@@ -180,7 +185,7 @@ public class GaussianInterpolationPolynomial extends InterpolationPolynomial {
         int shift = 1;
 
         List<String> factors = new ArrayList<>();
-        factors.add(String.valueOf(t));
+        factors.add(t);
 
         int row = centerIndex;
 
@@ -223,9 +228,14 @@ public class GaussianInterpolationPolynomial extends InterpolationPolynomial {
         return result.toString();
     }
 
-    private String secondFormulaString(double t) {
+    private String secondFormulaString() {
         int size = xColumn.size();
         int centerIndex = (size - 1) / 2;
+
+        double centerX = xColumn.get(centerIndex);
+        double h = xColumn.get(1) - xColumn.getFirst();
+
+        String t = "((x - " + centerX + ") / " + h + ")";
 
         List<List<Double>> differences = table();
 
@@ -237,7 +247,7 @@ public class GaussianInterpolationPolynomial extends InterpolationPolynomial {
         int shift = 1;
 
         List<String> factors = new ArrayList<>();
-        factors.add(String.valueOf(t));
+        factors.add(t);
 
         int row = centerIndex - 1;
 

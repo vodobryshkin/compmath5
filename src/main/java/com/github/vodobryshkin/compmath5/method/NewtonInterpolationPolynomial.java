@@ -25,6 +25,22 @@ public class NewtonInterpolationPolynomial extends InterpolationPolynomial {
     }
 
     public NewtonInterpolationPolynomial(List<Double> xColumn, List<Double> yColumn) {
+        if (xColumn.size() > 2) {
+            double diff = xColumn.get(1) - xColumn.getFirst();
+
+            boolean flag = false;
+
+            for (int i = 2; i < xColumn.size(); i++) {
+                if (xColumn.get(i) - xColumn.get(i - 1) != diff) {
+                    flag = true;
+                    break;
+                }
+            }
+
+            if (!flag) {
+                throw new IllegalArgumentException("Для того, чтобы использовать метод Ньютона с разделенными разностями, разница между соседними элементами не должна быть постоянной.");
+            }
+        }
         super(xColumn, yColumn);
     }
 
