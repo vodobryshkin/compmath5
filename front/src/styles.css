@@ -1,0 +1,156 @@
+main {
+  max-width: 1040px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+form,
+section,
+article {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+fieldset {
+  margin-bottom: 2rem;
+}
+
+.panel {
+  border: 1px solid #dddddd;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  background: #ffffff;
+}
+
+.form-block {
+  margin-bottom: 2rem;
+}
+
+.form-block h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem 1.5rem;
+  align-items: end;
+}
+
+label {
+  display: block;
+}
+
+select,
+input,
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+textarea {
+  min-height: 12rem;
+  font-family: monospace;
+}
+
+button {
+  margin-top: 0.5rem;
+}
+
+table {
+  width: 100%;
+}
+
+.info-table {
+  width: 100%;
+}
+
+.info-table th {
+  width: 220px;
+}
+
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.number-table {
+  width: 100%;
+  min-width: 100%;
+  table-layout: fixed;
+}
+
+.number-table th,
+.number-table td,
+.info-table th,
+.info-table td {
+  vertical-align: middle;
+}
+
+.number-table th,
+.number-table td {
+  white-space: nowrap;
+}
+
+.number-cell {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.differences-table {
+  table-layout: auto;
+  width: 100%;
+  min-width: 100%;
+}
+
+.differences-table td {
+  min-width: 110px;
+  padding-right: 1.25rem;
+}
+
+code {
+  white-space: normal;
+  word-break: break-word;
+}
+
+pre {
+  white-space: pre-wrap;
+}
+
+.formula-box {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 1rem;
+  background: #f6fff8;
+  border: 1px solid #d4ead9;
+  margin-bottom: 1.5rem;
+  white-space: nowrap;
+}
+
+.chart-wrapper {
+  width: 100%;
+  height: 560px;
+  margin-top: 1rem;
+}
+
+.chart-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.chart-toolbar button {
+  margin-top: 0;
+}
+
+.chart-toolbar span {
+  color: #555555;
+}
