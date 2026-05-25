@@ -88,7 +88,7 @@ public class GaussianInterpolationPolynomial extends InterpolationPolynomial {
             shift++;
         }
 
-        return new Solution(result, differences, firstFormulaString(t));
+        return new Solution(result, xColumn, yColumn, differences, firstFormulaString(t));
     }
 
     private Solution secondFormula(double t) {
@@ -143,7 +143,7 @@ public class GaussianInterpolationPolynomial extends InterpolationPolynomial {
             shift++;
         }
 
-        return new Solution(result, differences, secondFormulaString(t));
+        return new Solution(result, xColumn, yColumn, differences, secondFormulaString(t));
     }
 
     private List<List<Double>> table() {
