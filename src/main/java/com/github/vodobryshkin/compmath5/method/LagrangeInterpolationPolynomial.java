@@ -35,7 +35,7 @@ public class LagrangeInterpolationPolynomial extends InterpolationPolynomial {
             arguments.add(xArg * yi);
         }
 
-        return new Solution(arguments.stream().mapToDouble(Double::doubleValue).sum(), xColumn, yColumn, null, stringFormula());
+        return new Solution(arguments.stream().mapToDouble(Double::doubleValue).sum(), xColumn, yColumn,null, stringFormula());
     }
 
     private String stringFormula() {
