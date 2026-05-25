@@ -23,12 +23,12 @@ public class TableDto {
     @JsonProperty("y_column")
     private List<Double> yColumn;
 
-    @AssertTrue(message = "Only Three Methods Are Available")
+    @AssertTrue(message = "Доступны только полиномы Ньютона, Лагранжа и Гаусса")
     public boolean isMethodAvailable() {
         return "newton".equals(methodName) || "lagrange".equals(methodName) || "gaussian".equals(methodName);
     }
 
-    @AssertTrue(message = "X column and Y column must have the same sizes")
+    @AssertTrue(message = "Столбцы X и Y должны быть одного размера")
     public boolean isSameSizes() {
         return xColumn.size() == yColumn.size();
     }

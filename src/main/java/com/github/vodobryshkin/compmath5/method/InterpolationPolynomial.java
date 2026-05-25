@@ -23,7 +23,7 @@ public abstract class InterpolationPolynomial implements MathematicalFunction {
 
     public InterpolationPolynomial(List<Double> xColumn, List<Double> yColumn) {
         if (xColumn.size() != yColumn.size()) {
-            throw new IllegalArgumentException("X and Y columns must be the same sizes.");
+            throw new IllegalArgumentException("Столбцы X и Y должны иметь один размер.");
         }
 
         this.xColumn = xColumn;

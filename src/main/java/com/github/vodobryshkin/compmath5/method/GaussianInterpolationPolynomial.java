@@ -15,7 +15,7 @@ public class GaussianInterpolationPolynomial extends InterpolationPolynomial {
 
             for (int i = 2; i < xColumn.size(); i++) {
                 if (xColumn.get(i) - xColumn.get(i - 1) != diff) {
-                    throw new IllegalArgumentException("Gaussian method should be running with the same difference between x column elements.");
+                    throw new IllegalArgumentException("Метод Гаусса можно использовать только для конченых разностей.");
                 }
             }
         }
