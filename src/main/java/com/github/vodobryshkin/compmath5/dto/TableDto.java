@@ -25,7 +25,8 @@ public class TableDto {
 
     @AssertTrue(message = "Доступны только полиномы Ньютона, Лагранжа и Гаусса")
     public boolean isMethodAvailable() {
-        return "newton".equals(methodName) || "lagrange".equals(methodName) || "gaussian".equals(methodName);
+        return "newton".equals(methodName) || "lagrange".equals(methodName) || "gaussian".equals(methodName)
+                || "bessel".equals(methodName) || "stirling".equals(methodName);
     }
 
     @AssertTrue(message = "Столбцы X и Y должны быть одного размера")

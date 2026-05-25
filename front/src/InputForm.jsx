@@ -145,7 +145,7 @@ function FormulaInputFields({ form, isLogFunction, changeField }) {
             </label>
 
             <label>
-                Количество частей n
+                Количество узлов интегрирования
                 <input
                     name="n"
                     type="number"

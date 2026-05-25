@@ -11,9 +11,11 @@ public abstract class InterpolationPolynomial implements MathematicalFunction {
         List<Double> xColumn = new ArrayList<>();
         List<Double> yColumn = new ArrayList<>();
 
-        double step = (b - a) / n;
+        double step = (b - a) / (n - 1);
 
-        for (double x = a; x <= b; x += step) {
+        for (int i = 0; i < n; i++) {
+            double x = i == n - 1 ? b : a + i * step;
+
             xColumn.add(x);
             yColumn.add(f.value(x).getResult());
         }

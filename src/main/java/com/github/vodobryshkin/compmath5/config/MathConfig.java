@@ -25,7 +25,9 @@ public class MathConfig {
         return Map.of(
                 "lagrange", LagrangeInterpolationPolynomial.class,
                 "gaussian", GaussianInterpolationPolynomial.class,
-                "newton", NewtonInterpolationPolynomial.class
-        );
+                "newton", NewtonInterpolationPolynomial.class,
+                "stirling", StirlingInterpolationPolynomial.class,
+                "bessel", BesselInterpolationPolynomial.class
+                );
     }
 }
