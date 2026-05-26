@@ -26,6 +26,10 @@ export const METHOD_OPTIONS = [
     {
         value: "bessel",
         label: "Многочлен Бесселя"
+    },
+    {
+        value: "chebyshev",
+        label: "Многочлен Лагранжа с узлами через Чебышева"
     }
 ];
 

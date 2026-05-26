@@ -27,7 +27,8 @@ public class MathConfig {
                 "gaussian", GaussianInterpolationPolynomial.class,
                 "newton", NewtonInterpolationPolynomial.class,
                 "stirling", StirlingInterpolationPolynomial.class,
-                "bessel", BesselInterpolationPolynomial.class
+                "bessel", BesselInterpolationPolynomial.class,
+                "chebyshev", ChebyshevLagrangeInterpolationPolynomial.class
                 );
     }
 }

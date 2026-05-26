@@ -13,8 +13,6 @@ export default function InputForm({
     return (
         <form onSubmit={submit}>
             <fieldset className="panel">
-                <legend>Исходные данные</legend>
-
                 <div className="form-block">
                     <h3>1. Источник данных</h3>
 
@@ -186,16 +184,6 @@ function FileInputFields({ tableData, changeField, handleFile }) {
                     type="file"
                     accept=".json,application/json"
                     onChange={handleFile}
-                />
-            </label>
-
-            <label>
-                Содержимое файла
-                <textarea
-                    name="tableData"
-                    rows="8"
-                    value={tableData}
-                    onChange={changeField}
                 />
             </label>
         </>
