@@ -40,11 +40,11 @@ function lagrangeValue(xColumn, yColumn, x) {
     return result;
 }
 
-function domainWithPadding(values, fallbackLeft = -1, fallbackRight = 1) {
+function axisDomainWithSmallPadding(values) {
     const finiteValues = values.filter(Number.isFinite);
 
     if (finiteValues.length === 0) {
-        return [fallbackLeft, fallbackRight];
+        return [-1, 1];
     }
 
     const min = Math.min(...finiteValues);
@@ -54,7 +54,7 @@ function domainWithPadding(values, fallbackLeft = -1, fallbackRight = 1) {
         return [min - 1, max + 1];
     }
 
-    const padding = (max - min) * 0.35;
+    const padding = (max - min) * 0.08;
 
     return [min - padding, max + padding];
 }
@@ -96,10 +96,14 @@ export function useInterpolationChartData({
 
     const polynomialFunction = x => lagrangeValue(xColumn, yColumn, x);
 
-    const xDomain = domainWithPadding([
-        ...xColumn,
-        usedArgument
-    ]);
+    const minNodeX = Math.min(...xColumn);
+    const maxNodeX = Math.max(...xColumn);
+
+    const span = maxNodeX - minNodeX;
+    const extension = span * 0.08;
+
+    const plotMinX = minNodeX - extension;
+    const plotMaxX = maxNodeX + extension;
 
     const source = sourceFunction(Number(usedFormulaNumber));
 
@@ -107,7 +111,7 @@ export function useInterpolationChartData({
     const steps = 700;
 
     for (let i = 0; i <= steps; i++) {
-        const x = xDomain[0] + (xDomain[1] - xDomain[0]) * i / steps;
+        const x = plotMinX + (plotMaxX - plotMinX) * i / steps;
 
         const polynomialY = polynomialFunction(x);
         const sourceY = usedInputMode === "formula" ? source(x) : NaN;
@@ -132,7 +136,13 @@ export function useInterpolationChartData({
         ? [{ x: usedArgument, y: resultY }]
         : [];
 
-    const yDomain = domainWithPadding([
+    const xDomain = axisDomainWithSmallPadding([
+        minNodeX,
+        maxNodeX,
+        usedArgument
+    ]);
+
+    const yDomain = axisDomainWithSmallPadding([
         ...yColumn,
         resultY,
         ...chartData.map(point => point.polynomialY),
