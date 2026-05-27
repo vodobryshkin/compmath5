@@ -75,12 +75,6 @@ function validateColumns(xColumn, yColumn) {
             throw new Error("x_column и y_column должны содержать только числа.");
         }
     }
-
-    for (let i = 1; i < xColumn.length; i++) {
-        if (xColumn[i] <= xColumn[i - 1]) {
-            throw new Error("Значения x_column должны идти строго по возрастанию.");
-        }
-    }
 }
 
 export function makeTableText(xColumn, yColumn) {

@@ -28,6 +28,21 @@ public abstract class InterpolationPolynomial implements MathematicalFunction {
             throw new IllegalArgumentException("Столбцы X и Y должны иметь один размер.");
         }
 
+        for (int i = 0; i < xColumn.size(); i++) {
+            for (int j = 0; j < xColumn.size(); j++) {
+                if (xColumn.get(i) < xColumn.get(j)) {
+                    double tempX = xColumn.get(j);
+                    double tempY = yColumn.get(j);
+
+                    xColumn.set(j, xColumn.get(i));
+                    yColumn.set(j, yColumn.get(i));
+
+                    xColumn.set(i, tempX);
+                    yColumn.set(i, tempY);
+                }
+            }
+        }
+
         this.xColumn = xColumn;
         this.yColumn = yColumn;
     }

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { calculateByFormula, calculateByTable } from "./api.js";
 import {
-    makeTableText,
     parseJsonTableData,
     parseTableData
 } from "./math.js";
@@ -14,6 +13,8 @@ export function useInterpolationCalculator() {
     const [inputMode, setInputMode] = useState("formula");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+
+    const [fileText, setFileText] = useState("");
 
     const [form, setForm] = useState({
         methodName: "lagrange",
@@ -45,24 +46,22 @@ export function useInterpolationCalculator() {
     async function handleFile(event) {
         const file = event.target.files?.[0];
 
+        setFileText("");
+
         if (!file) {
             return;
         }
 
         const text = await file.text();
 
-        setForm(previous => ({
-            ...previous,
-            tableData: text
-        }));
+        setFileText(text);
 
         try {
             const parsed = parseJsonTableData(text);
 
             setForm(previous => ({
                 ...previous,
-                x: String(parsed.x),
-                tableData: text
+                x: String(parsed.x)
             }));
         } catch {
             // Ошибка будет показана после нажатия "Рассчитать".
@@ -84,13 +83,6 @@ export function useInterpolationCalculator() {
             setUsedFormulaNumber(Number(form.formulaNumber));
             setUsedMethodName(form.methodName);
             setUsedArgument(argument);
-
-            if (data.x_column && data.y_column && inputMode !== "file") {
-                setForm(previous => ({
-                    ...previous,
-                    tableData: makeTableText(data.x_column, data.y_column)
-                }));
-            }
 
             if (inputMode === "file") {
                 setForm(previous => ({
@@ -158,7 +150,7 @@ export function useInterpolationCalculator() {
     }
 
     async function calculateFileMode() {
-        const table = parseJsonTableData(form.tableData);
+        const table = parseJsonTableData(fileText);
         const argument = table.x;
 
         const data = await calculateByTable({

@@ -1,10 +1,77 @@
-import { useMemo } from "react";
-import {
-    buildFormulaFunction,
-    functionValue,
-    paddedDomain
-} from "./math.js";
-import { formulaToKatex } from "./formulaToKatex.js";
+function sourceFunction(formulaNumber) {
+    if (formulaNumber === 1) {
+        return x => 4 * x + 5;
+    }
+
+    if (formulaNumber === 2) {
+        return x => Math.sin(x);
+    }
+
+    if (formulaNumber === 3) {
+        return x => 10 * Math.exp(5 * x);
+    }
+
+    if (formulaNumber === 4) {
+        return x => 5 * x * x - 10 * x + 22;
+    }
+
+    if (formulaNumber === 5) {
+        return x => x > 0 ? 3 * Math.log(x) + 17.5 : NaN;
+    }
+
+    return () => NaN;
+}
+
+function lagrangeValue(xColumn, yColumn, x) {
+    let result = 0;
+
+    for (let i = 0; i < xColumn.length; i++) {
+        let basis = 1;
+
+        for (let j = 0; j < xColumn.length; j++) {
+            if (i !== j) {
+                basis *= (x - xColumn[j]) / (xColumn[i] - xColumn[j]);
+            }
+        }
+
+        result += yColumn[i] * basis;
+    }
+
+    return result;
+}
+
+function domainWithPadding(values, fallbackLeft = -1, fallbackRight = 1) {
+    const finiteValues = values.filter(Number.isFinite);
+
+    if (finiteValues.length === 0) {
+        return [fallbackLeft, fallbackRight];
+    }
+
+    const min = Math.min(...finiteValues);
+    const max = Math.max(...finiteValues);
+
+    if (Math.abs(max - min) < 1e-12) {
+        return [min - 1, max + 1];
+    }
+
+    const padding = (max - min) * 0.35;
+
+    return [min - padding, max + padding];
+}
+
+function formulaToKatex(formula) {
+    if (!formula) {
+        return "";
+    }
+
+    return formula
+        .replaceAll("*", "\\cdot ")
+        .replaceAll("Math.sin", "\\sin")
+        .replaceAll("Math.cos", "\\cos")
+        .replaceAll("Math.log", "\\ln")
+        .replaceAll("Math.exp", "e^")
+        .replaceAll("phi", "\\varphi");
+}
 
 export function useInterpolationChartData({
                                               solution,
@@ -12,100 +79,73 @@ export function useInterpolationChartData({
                                               usedFormulaNumber,
                                               usedArgument
                                           }) {
-    const xColumn = solution?.x_column ?? [];
-    const yColumn = solution?.y_column ?? [];
+    if (!solution?.x_column || !solution?.y_column) {
+        return {
+            polynomialFunction: null,
+            chartData: [],
+            nodePoints: [],
+            resultPoint: [],
+            xDomain: [-1, 1],
+            yDomain: [-1, 1],
+            katexFormula: ""
+        };
+    }
 
-    const polynomialFunction = useMemo(() => {
-        return buildFormulaFunction(solution?.formula);
-    }, [solution?.formula]);
+    const xColumn = solution.x_column.map(Number);
+    const yColumn = solution.y_column.map(Number);
 
-    const katexFormula = useMemo(() => {
-        return formulaToKatex(solution?.formula);
-    }, [solution?.formula]);
+    const polynomialFunction = x => lagrangeValue(xColumn, yColumn, x);
 
-    const xDomain = useMemo(() => {
-        if (xColumn.length === 0 || usedArgument === null) {
-            return [0, 1];
-        }
-
-        const minNodeX = Math.min(...xColumn);
-        const maxNodeX = Math.max(...xColumn);
-
-        return [
-            Math.min(minNodeX, usedArgument),
-            Math.max(maxNodeX, usedArgument)
-        ];
-    }, [xColumn, usedArgument]);
-
-    const chartData = useMemo(() => {
-        if (!solution || !polynomialFunction) {
-            return [];
-        }
-
-        const result = [];
-        const count = 1000;
-        const minX = xDomain[0];
-        const maxX = xDomain[1];
-
-        for (let i = 0; i <= count; i++) {
-            const x = minX + (maxX - minX) * i / count;
-            const polynomialY = polynomialFunction(x);
-            const sourceY = usedInputMode === "formula" ? functionValue(usedFormulaNumber, x) : null;
-
-            result.push({
-                x: x,
-                polynomialY: Number.isFinite(polynomialY) ? polynomialY : null,
-                sourceY: Number.isFinite(sourceY) ? sourceY : null
-            });
-        }
-
-        return result;
-    }, [
-        solution,
-        polynomialFunction,
-        xDomain,
-        usedInputMode,
-        usedFormulaNumber
+    const xDomain = domainWithPadding([
+        ...xColumn,
+        usedArgument
     ]);
 
-    const nodePoints = useMemo(() => {
-        return xColumn.map((x, index) => ({
-            x: x,
-            y: yColumn[index]
-        }));
-    }, [xColumn, yColumn]);
+    const source = sourceFunction(Number(usedFormulaNumber));
 
-    const resultPoint = useMemo(() => {
-        if (!solution || usedArgument === null) {
-            return [];
-        }
+    const chartData = [];
+    const steps = 700;
 
-        return [
-            {
-                x: usedArgument,
-                y: solution.result
-            }
-        ];
-    }, [solution, usedArgument]);
+    for (let i = 0; i <= steps; i++) {
+        const x = xDomain[0] + (xDomain[1] - xDomain[0]) * i / steps;
 
-    const yDomain = useMemo(() => {
-        const values = [
-            ...chartData.map(point => point.polynomialY),
-            ...chartData.map(point => point.sourceY),
-            ...nodePoints.map(point => point.y),
-            ...resultPoint.map(point => point.y)
-        ];
+        const polynomialY = polynomialFunction(x);
+        const sourceY = usedInputMode === "formula" ? source(x) : NaN;
 
-        return paddedDomain(values);
-    }, [chartData, nodePoints, resultPoint]);
+        chartData.push({
+            x,
+            polynomialY: Number.isFinite(polynomialY) ? polynomialY : NaN,
+            sourceY: Number.isFinite(sourceY) ? sourceY : NaN
+        });
+    }
+
+    const nodePoints = xColumn.map((x, index) => ({
+        x,
+        y: yColumn[index]
+    }));
+
+    const resultY = Number.isFinite(solution.result)
+        ? solution.result
+        : polynomialFunction(usedArgument);
+
+    const resultPoint = Number.isFinite(usedArgument) && Number.isFinite(resultY)
+        ? [{ x: usedArgument, y: resultY }]
+        : [];
+
+    const yDomain = domainWithPadding([
+        ...yColumn,
+        resultY,
+        ...chartData.map(point => point.polynomialY),
+        ...chartData.map(point => point.sourceY)
+    ]);
 
     return {
         polynomialFunction,
-        katexFormula,
-        xDomain,
         chartData,
         nodePoints,
         resultPoint,
-        yDomain
+        xDomain,
+        yDomain,
+        katexFormula: formulaToKatex(solution.formula)
     };
 }
